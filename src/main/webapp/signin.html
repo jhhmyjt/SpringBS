@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign in</title>
+    <link rel="stylesheet" href="bootvue/css/bootstrap.min.css">
+    <link rel="stylesheet" href="signin.css">
+</head>
+
+<body>
+<main class="form-signin" id="signin">
+    <div id="alertSignin" class="text-start">
+    </div>
+    <form action="#">
+        <h1 class="mb-4">BookStore</h1>
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <div class="form-floating">
+            <input type="text" class="form-control" name="" id="username"
+                   placeholder="Please input your username"
+                   v-model="user.name"
+            >
+            <label for="username">Username</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" name="" id="password"
+                   placeholder="Please input your password"
+                   v-model="user.password"
+            >
+            <label for="password">Password</label>
+        </div>
+        <div class="checkbox mb-3">
+            <label>
+                <input type="checkbox" value="remember-me">
+                Remember me
+            </label>
+        </div>
+        <button class="w-100 btn btn-lg btn-primary" id="alertBtn" @click="postSignin">Sign in</button>
+        <p class="mt-4 mb-3 text-muted">© 2022</p>
+    </form>
+</main>
+<script src="bootvue/js/axios.min.js"></script>
+<script src="bootvue/js/vue.min.js"></script>
+<script src="bootvue/js/bootstrap.min.js"></script>
+<script>
+    const signin=new Vue({
+        el: "#signin",
+        data:{
+            user:{},//双向绑定数据
+        },
+        methods:{
+            postSignin(){
+                let _this=this;
+                axios.post('http://localhost:9999/bookstore/user/signin',this.user).then(function (response){
+                    if(response.data.success){
+                        alert("success");
+                        console.log(_this.user.name);
+                    }else{
+                        alertFailure(response.data.message);
+                    }
+                })
+            }
+        }
+    })
+    var alertPlaceholder = document.getElementById('alertSignin')
+    var alertTrigger = document.getElementById('alertBtn')
+
+    function alertFailure(message) {
+        var wrapper = document.createElement('div')
+        wrapper.innerHTML =
+            '<div class="alert alert-danger alert-dismissible" role="alert">'+message+'<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+        alertPlaceholder.append(wrapper)
+    }
+</script>
+</body>
+
+</html>

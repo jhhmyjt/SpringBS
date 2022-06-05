@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8">
+  <title>BookStore</title>
+  <link rel="stylesheet" href="bootvue/css/bootstrap.min.css">
+  <link rel="stylesheet" href="product.css">
+</head>
+
+<body>
+<header
+        class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between p-3 mb-4 border-bottom">
+  <a href="" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+    <h1 class="display-6 fw-bold">BookStore</h1>
+  </a>
+
+  <!-- <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+      <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
+      <li><a href="#" class="nav-link px-2 link-dark">Features</a></li>
+      <li><a href="#" class="nav-link px-2 link-dark">Pricing</a></li>
+      <li><a href="#" class="nav-link px-2 link-dark">FAQs</a></li>
+      <li><a href="#" class="nav-link px-2 link-dark">About</a></li>
+  </ul> -->
+
+  <div class="col-md-3 text-end">
+    <button type="button" class="btn btn-outline-primary me-2">Add</button>
+    <button type="button" class="btn btn-outline-primary me-2">Login</button>
+    <button type="button" class="btn btn-primary">Sign-up</button>
+  </div>
+</header>
+<main>
+  <ul class="list-unstyled px-5" id="productList">
+    <li class="d-flex my-4 bg-light rounded-3" v-for="book in books">
+      <div class="flex-shrink-0">
+        <div class="imgBox">
+          <a href="">
+            <img v-bind:src="book.imgUrl"
+                 alt="{{book.name}}" class="img rounded-3">
+          </a>
+        </div>
+      </div>
+      <div class="flex-grow-1 ms-3 mt-3">
+        <a href="">
+          <h3>{{book.title}}</h3>
+        </a>
+        <p>{{book.bookDesc}}</p>
+        <h4 class="price">${{book.price}}</h4>
+      </div>
+    </li>
+  </ul>
+</main>
+<script src="bootvue/js/axios.min.js"></script>
+<script src="bootvue/js/vue.min.js"></script>
+<script>
+  const productList=new Vue({
+    el:"#productList",
+    data:{
+      demo_data:[
+        {name:"book_01",desc:"desc",price:6.99,imgUrl:"https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg"},
+        {name:"book_02",desc:"desc",price:7.99,imgUrl:"https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg"}
+      ],
+      books:[],//数据来源后端接口，页面加载完成之后完成赋值操作
+    },
+    method:{},
+    //created 阶段完成注入
+    created(){
+      let _this=this;
+      axios.get("http://localhost:9999/bookstore/store/findAll").then(function (response){
+        console.log(response);
+        _this.books=response.data;
+      }).catch(function (err){
+        console.log(ree);
+      });
+    }
+  })
+</script>
+</body>
+
+</html>
