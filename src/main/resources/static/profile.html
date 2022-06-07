@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>profile</title>
+  <link rel="stylesheet" href="webapp/bootvue/css/bootstrap.min.css">
+  <link rel="stylesheet" href="webapp/profile.css">
+</head>
+
+<body>
+<header
+        class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between p-3 mb-4 border-bottom">
+  <a href="" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+    <h1 class="display-6 fw-bold">BookStore</h1>
+  </a>
+  <div class="col-md-3 text-end">
+    <button type="button" class="btn btn-outline-primary me-2">Add</button>
+    <button type="button" class="btn btn-outline-primary me-2">Login</button>
+    <button type="button" class="btn btn-primary">Sign-up</button>
+  </div>
+</header>
+<main>
+  <div class="container" id="userBox">
+    <div class="row">
+      <div class="col-4">
+        <div class="card">
+          <img src="img/logo.png" class="card-img-top" alt="...">
+          <div class="card-body" id="normalView">
+            <h1 class="h3">Hello,</h1>
+            <p class="fs-4">{{user.name}}</p>
+            <p class="card-text lead">Some quick example text to build on the card title and make up the
+              bulk
+              of the card's content.</p>
+            <button class="btn btn-outline-primary" id="editBtn">Edit profile</button>
+          </div>
+          <div class="card-body d-none" id="editView">
+            <div id="alertEdit"></div>
+            <form action="#">
+              <h1 class="h3 mb-3 fw-normal">Edit your profile</h1>
+              <div class="form-floating mb-2">
+                <input type="text" class="form-control" name="" id="username"
+                       placeholder="Please input your username"
+                       v-model="userChange.name"
+                >
+                <label for="username">Username</label>
+              </div>
+              <div class="form-floating mb-2">
+                <input type="email" class="form-control" name="" id="email"
+                       placeholder="Please input your email address"
+                       v-model="userChange.email"
+                >
+                <label for="email">Email address</label>
+              </div>
+              <button class="btn btn-outline-primary" @click="saveUserInfo">Save</button>
+              <button class="btn btn-outline-secondary" id="cancelBtn">Cancel</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="row ms-4 mt-4">
+          <div class="col-4">
+            <p class="h3">Nickname:</p>
+          </div>
+          <div class="col-8">
+            <p class="fs-3">{{user.name}}</p>
+          </div>
+        </div>
+        <div class="row ms-4 mt-3">
+          <div class="col-4">
+            <p class="h3">Password:</p>
+          </div>
+          <div class="col-8">
+            <p class="fs-3">{{user.password}}</p>
+          </div>
+        </div>
+        <div class="row ms-4 mt-3">
+          <div class="col-4">
+            <p class="h3">E-mail address:</p>
+          </div>
+          <div class="col-8">
+            <p class="fs-3">{{user.email}}</p>
+          </div>
+        </div>
+        <div class="row ms-4 mt-3">
+          <div class="col-4">
+            <p class="h3">Balance:</p>
+          </div>
+          <div class="col-8">
+            <span class="fs-3">{{user.balance}}</span>
+            <button type="button" class="btn btn-outline-success ms-2">charge</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+<script src="webapp/bootvue/js/axios.min.js"></script>
+<script src="webapp/bootvue/js/vue.min.js"></script>
+<script src="webapp/bootvue/js/bootstrap.min.js"></script>
+<script>
+  const userVue = new Vue({
+    el: "#userBox",
+    data: {
+      user: {},
+      userChange:{}
+    },
+    methods: {
+      //保存用户信息
+      saveUserInfo() {
+        let _this = this;
+        console.log(this.userChange);
+        _this.userChange.id=_this.user.id;
+        axios.post("http://localhost:9999/bookstore/user/saveChange", _this.userChange).then(function (response) {
+          console.log(response.data);
+          if (response.data.success) {
+            //成功注册
+            alertSuccess();
+          } else {
+            alertFailure(response.data.message);
+          }
+        }).catch(function (err) {
+          console.log(err);
+        })
+      }
+    },
+    created(){
+      let _this=this;
+      axios.get("http://localhost:9999/bookstore/user/findById").then(function (response){
+        console.log(response);
+        _this.user=response.data;
+      }).catch(function (err){
+        console.log(ree);
+      });
+    }
+  })
+  var alertPlaceholder = document.getElementById('alertEdit')
+
+  function alertSuccess() {
+    var wrapper = document.createElement('div')
+    wrapper.innerHTML =
+            '<div class="alert alert-success alert-dismissible" role="alert">Edit succeed! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    alertPlaceholder.append(wrapper)
+  }
+
+  function alertFailure(message) {
+    var wrapper = document.createElement('div')
+    wrapper.innerHTML =
+            '<div class="alert alert-danger alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+    alertPlaceholder.append(wrapper)
+  }
+  var editView = document.getElementById('editView');
+  var normalView = document.getElementById('normalView');
+  var editBtn = document.getElementById('editBtn');
+  var cancelBtn = document.getElementById('cancelBtn');
+  console.log("get element.");
+
+  function hiddenEdit() {
+    editView.className = 'card-body d-none';
+    normalView.className = 'card-body';
+  }
+
+  function showEdit() {
+    editView.className = 'card-body';
+    normalView.className = 'card-body d-none';
+  }
+  if (editBtn) {
+    editBtn.addEventListener('click', function () {
+      showEdit();
+    })
+  }
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function () {
+      hiddenEdit();
+    })
+  }
+</script>
+</body>
+
+</html>

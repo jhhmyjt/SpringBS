@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>detail</title>
+    <link rel="stylesheet" href="webapp/bootvue/css/bootstrap.min.css">
+    <link rel="stylesheet" href="webapp/detail.css">
+</head>
+
+<body>
+<header
+        class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between p-3 mb-4 border-bottom">
+    <a href="" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+        <h1 class="display-6 fw-bold">BookStore</h1>
+    </a>
+
+    <div class="col-md-3 text-end">
+        <button type="button" class="btn btn-outline-primary me-2">Add</button>
+        <button type="button" class="btn btn-outline-primary me-2">Login</button>
+        <button type="button" class="btn btn-primary">Sign-up</button>
+    </div>
+</header>
+<main>
+    <!-- 浅色大背景 -->
+    <div class="p-5 mb-4 bg-light rounded-3" id="productBox">
+        <!-- 弹性布局的容器（container-fluid是宽度尽可能大的响应式布局） -->
+        <div class="d-flex py-5">
+            <div class="d-shrink-0">
+                <div class="imgBox">
+                    <img v-bind:src="book.imgUrl"
+                         alt="{{book.name}}" class="img rounded-3">
+                </div>
+            </div>
+            <div class="flex-grow-1 ms-3 ps-3">
+                <h1 class="display-5 fw-bold">{{book.title}}</h1>
+                <p class="fs-4">{{book.bookDesc}}</p>
+                <h4 class="price">${{book.price}}</h4>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="webapp/bootvue/js/axios.min.js"></script>
+<script src="webapp/bootvue/js/vue.min.js"></script>
+<script src="webapp/bootvue/js/bootstrap.min.js"></script>
+<script>
+    const productVue=new Vue({
+        el:"#productBox",
+        data:{
+            book:{},//数据来源后端接口，页面加载完成之后完成赋值操作
+        },
+        method:{
+        },
+        //created 阶段完成注入
+        created(){
+            let _this=this;
+            axios.get("http://localhost:9999/bookstore/store/findByName").then(function (response){
+                console.log(response);
+                _this.book=response.data;
+            }).catch(function (err){
+                console.log(ree);
+            });
+        }
+    });
+</script>
+</body>
+
+</html>

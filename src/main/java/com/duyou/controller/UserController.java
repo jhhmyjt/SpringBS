@@ -47,4 +47,23 @@ public class UserController {
         }
         return map;
     }
+    //获取单个user
+    @GetMapping("findById")
+    public User findById(){
+        return userService.findById();
+    }
+
+    //修改
+    @PostMapping("saveChange")
+    public Map<String,Object> saveChange(@RequestBody User user){
+        Map<String,Object> map=new HashMap<>();
+        try {
+            userService.saveUser(user);
+            map.put("success",true);
+        }catch (Exception e){
+            map.put("success",false);
+            map.put("message","Failure.");
+        }
+        return map;
+    }
 }

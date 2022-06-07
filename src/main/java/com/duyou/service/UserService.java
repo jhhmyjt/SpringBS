@@ -9,4 +9,8 @@ public interface UserService {
     void addUser(User user);
     //根据Name查询
     List<User> findByName(String name);
+
+    User findById();
+
+    void saveUser(User user);
 }

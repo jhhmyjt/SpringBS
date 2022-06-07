@@ -27,4 +27,17 @@ public class UserServiceImpl implements UserService{
         queryWrapper.eq("name",name);
         return userDAO.selectList(queryWrapper);
     }
+
+    @Override
+    public User findById() {
+        return userDAO.selectById(1);
+    }
+
+    @Override
+    public void saveUser(User user) {
+        User user1 = userDAO.selectById(user.getId());
+        user1.setName(user.getName());
+        user1.setEmail(user.getEmail());
+        userDAO.updateById(user1);
+    }
 }

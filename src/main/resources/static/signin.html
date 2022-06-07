@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Sign in</title>
-    <link rel="stylesheet" href="bootvue/css/bootstrap.min.css">
-    <link rel="stylesheet" href="signin.css">
+    <link rel="stylesheet" href="webapp/bootvue/css/bootstrap.min.css">
+    <link rel="stylesheet" href="webapp/signin.css">
 </head>
 
 <body>
@@ -35,13 +35,14 @@
                 Remember me
             </label>
         </div>
-        <button class="w-100 btn btn-lg btn-primary" id="alertBtn" @click="postSignin">Sign in</button>
+        <button class="w-100 btn btn-lg btn-primary mb-2" id="alertBtn" @click="postSignin">Sign in</button>
+        <button class="w-100 btn btn-lg btn-outline-primary" >Sign up</button>
         <p class="mt-4 mb-3 text-muted">© 2022</p>
     </form>
 </main>
-<script src="bootvue/js/axios.min.js"></script>
-<script src="bootvue/js/vue.min.js"></script>
-<script src="bootvue/js/bootstrap.min.js"></script>
+<script src="webapp/bootvue/js/axios.min.js"></script>
+<script src="webapp/bootvue/js/vue.min.js"></script>
+<script src="webapp/bootvue/js/bootstrap.min.js"></script>
 <script>
     const signin=new Vue({
         el: "#signin",

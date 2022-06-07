@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up</title>
+    <link rel="stylesheet" href="webapp/bootvue/css/bootstrap.min.css">
+    <link rel="stylesheet" href="webapp/signup.css">
+</head>
+
+<body>
+<main class="form-signup" id="signup">
+    <div id="alertSignup" class="text-start">
+    </div>
+    <h1 class="mb-4">BookStore</h1>
+    <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
+    <div class="form-floating mb-4">
+        <input type="text" class="form-control" name="" id="username"
+               placeholder="Please input your username"
+               v-model="user.name"
+        >
+        <label for="username">Username</label>
+    </div>
+    <div class="form-floating mb-4">
+        <input type="password" class="form-control" name="" id="password"
+               placeholder="Please input your password"
+               v-model="user.password"
+        >
+        <label for="password">Password</label>
+    </div>
+    <div class="form-floating mb-4">
+        <input type="password" class="form-control" name="" id="confirmPsw"
+               placeholder="Please input your confirm password"
+               v-model="user.confirmPsw"
+        >
+        <label for="password">Confirm password</label>
+    </div>
+    <div class="form-floating mb-4">
+        <input type="email" class="form-control" name="" id="email"
+               placeholder="Please input your email address"
+               v-model="user.email"
+        >
+        <label for="password">Email address</label>
+    </div>
+    <button class="w-100 btn btn-lg btn-primary" @click="saveUserInfo" id="alertBtn">Sign up</button>
+    <p class="mt-4 mb-3 text-muted">© 2022</p>
+</main>
+<script src="webapp/bootvue/js/axios.min.js"></script>
+<script src="webapp/bootvue/js/vue.min.js"></script>
+<script src="webapp/bootvue/js/bootstrap.min.js"></script>
+<script>
+    const signup = new Vue({
+        el: "#signup",
+        data: {
+            user: {},
+        },
+        methods: {
+            //保存用户信息
+            saveUserInfo() {
+                let _this = this;
+                console.log(this.user);
+                if (_this.user.password !== _this.user.confirmPsw) {
+                    alertFailure("Confirm password is not the same as password.");
+                    return;
+                }
+                axios.post("http://localhost:9999/bookstore/user/signup", this.user).then(function (response) {
+                    console.log(response.data);
+                    if (response.data.success) {
+                        //成功注册
+                        _this.user = {};  //清空页面
+                        alertSuccess();
+                    } else {
+                        alertFailure(response.data.message);
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                })
+            }
+        },
+    })
+    var alertPlaceholder = document.getElementById('alertSignup')
+    var alertTrigger = document.getElementById('alertBtn')
+
+    function alertSuccess() {
+        var wrapper = document.createElement('div')
+        wrapper.innerHTML =
+            '<div class="alert alert-success alert-dismissible" role="alert">Sign up succeed! <a href="signin.html" class="alert-link">Sign in now.</a>.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+        alertPlaceholder.append(wrapper)
+    }
+
+    function alertFailure(message) {
+        var wrapper = document.createElement('div')
+        wrapper.innerHTML =
+            '<div class="alert alert-danger alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+        alertPlaceholder.append(wrapper)
+    }
+
+    //监听点击事件
+    // if (alertTrigger) {
+    //     alertTrigger.addEventListener('click', function () {
+    //         alertFailure()
+    //     })
+    // }
+</script>
+</body>
+
+</html>

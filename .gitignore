@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Vue and Bootstrap ###
-src/main/webapp/bootvue
+src/main/resources/static/webapp/bootvue

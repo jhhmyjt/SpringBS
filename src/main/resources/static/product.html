@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8">
+  <title>BookStore</title>
+  <link rel="stylesheet" href="webapp/bootvue/css/bootstrap.min.css">
+  <link rel="stylesheet" href="webapp/product.css">
+</head>
+
+<body>
+<header
+        class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between p-3 mb-4 border-bottom">
+  <a href="" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+    <h1 class="display-6 fw-bold">BookStore</h1>
+  </a>
+
+  <div class="col-md-3 text-end">
+    <button type="button" class="btn btn-outline-primary me-2" id="addBtn">Add</button>
+    <button type="button" class="btn btn-outline-primary me-2">Login</button>
+    <button type="button" class="btn btn-primary">Sign-up</button>
+    <a href="#">profile</a>
+  </div>
+</header>
+<main>
+  <div class="container d-none" id="editView">
+    <div id="alertAddBook"></div>
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" class="form-control" id="title" v-model="book.title">
+    </div>
+    <div class="mb-3">
+      <label for="author" class="form-label">Author</label>
+      <input type="text" class="form-control" id="author" v-model="book.author">
+    </div>
+    <div class="mb-3">
+      <label for="desc" class="form-label">Desc</label>
+      <input type="text" class="form-control" id="desc" v-model="book.bookDesc">
+    </div>
+    <div class="mb-3">
+      <label for="imgUrl" class="form-label">Img url</label>
+      <input type="url" class="form-control" id="imgUrl" v-model="book.imgUrl">
+    </div>
+    <div class="mb-3">
+      <label for="price" class="form-label">Price</label>
+      <input type="number" class="form-control" id="price" v-model="book.price">
+    </div>
+    <div class="mb-3">
+      <label for="press" class="form-label">Press</label>
+      <input type="text" class="form-control" id="press" v-model="book.press">
+    </div>
+    <button class="btn btn-outline-primary" @click="addBook">Save</button>
+    <button class="btn btn-outline-secondary" id="cancelBtn">Cancel</button>
+  </div>
+  <ul class="list-unstyled px-5" id="productList">
+    <li class="d-flex my-4 bg-light rounded-3" v-for="book in books">
+      <div class="flex-shrink-0">
+        <div class="imgBox">
+          <a href="">
+            <img v-bind:src="book.imgUrl"
+                 alt="{{book.name}}" class="img rounded-3">
+          </a>
+        </div>
+      </div>
+      <div class="flex-grow-1 ms-3 mt-3">
+        <a href="">
+          <h3>{{book.title}}</h3>
+        </a>
+        <p>{{book.bookDesc}}</p>
+        <h4 class="price">${{book.price}}</h4>
+      </div>
+    </li>
+  </ul>
+</main>
+<script src="webapp/bootvue/js/axios.min.js"></script>
+<script src="webapp/bootvue/js/vue.min.js"></script>
+<script src="webapp/bootvue/js/bootstrap.min.js"></script>
+<script>
+  const productList=new Vue({
+    el:"#productList",
+    data:{
+      books:[],//数据来源后端接口，页面加载完成之后完成赋值操作
+    },
+    method:{
+    },
+    //created 阶段完成注入
+    created(){
+      let _this=this;
+      axios.get("http://localhost:9999/bookstore/store/findAll").then(function (response){
+        console.log(response);
+        _this.books=response.data;
+      }).catch(function (err){
+        console.log(ree);
+      });
+    }
+  });
+  const bookVue=new Vue({
+    el: "#editView",
+    data: {
+      book:{},
+    },
+    methods: {
+      addBook(){
+        let _this = this;
+        console.log(this.book);
+        axios.post("http://localhost:9999/bookstore/store/addBook", _this.book).then(function (response) {
+          console.log(response.data);
+          if (response.data.success) {
+            //成功注册
+            _this.book = {};  //清空页面
+            _this.findAll();
+            alertSuccess();
+          } else {
+            alertFailure(response.data.message);
+          }
+        }).catch(function (err) {
+          console.log(err);
+        })
+      },
+      findAll(){
+        let _this=this;
+        axios.get("http://localhost:9999/bookstore/store/findAll").then(function (response){
+          console.log(response);
+          _this.books=response.data;
+        }).catch(function (err){
+          console.log(ree);
+        });
+      }
+    }
+  })
+  var editView = document.getElementById('editView');
+  var addBtn = document.getElementById('addBtn');
+  var cancelBtn = document.getElementById('cancelBtn');
+  console.log("get element.");
+
+  function hiddenEdit() {
+    editView.className = 'container d-none';
+  }
+
+  function showEdit() {
+    editView.className = "container";
+    console.log("show");
+  }
+  if (addBtn) {
+    addBtn.addEventListener('click', function () {
+      showEdit();
+    })
+  }
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function () {
+      hiddenEdit();
+    })
+  }
+  var alertPlaceholder = document.getElementById('alertAddBook')
+  function alertSuccess() {
+    var wrapper = document.createElement('div')
+    wrapper.innerHTML =
+            '<div class="alert alert-success alert-dismissible" role="alert">Add succeed!<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+    alertPlaceholder.append(wrapper)
+  }
+
+  function alertFailure(message) {
+    var wrapper = document.createElement('div')
+    wrapper.innerHTML =
+            '<div class="alert alert-danger alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+
+    alertPlaceholder.append(wrapper)
+  }
+</script>
+</body>
+
+</html>
